@@ -27,7 +27,7 @@ partial class ExampleLicensingProvider
 			// If user's password hash is null, then it's the rare and possibly invalid
 			// situation where a user does not have a password and can authenticate without one.
 			// Normally the hash will be present and it must be compared to the hash of the incoming password.
-			byte[] inhash = HP(password ?? "", user.Uid)!;
+			byte[] inhash = DeepHash(password ?? "", user.Uid)!;
 			if (!inhash.SequenceEqual(user.PassHash)) throw new ExampleLicensingException(LicensingErrorType.PasswordIncorrect, $"User Id '{userId}' incorrect password");
 		}
 		user.LoginCount ??= 1;
@@ -47,7 +47,7 @@ partial class ExampleLicensingProvider
 			.FirstOrDefaultAsync(u => string.Compare(u.Name, userName, StringComparison.CurrentCultureIgnoreCase) == 0) ?? throw new ExampleLicensingException(LicensingErrorType.IdentityNotFound, $"User Name '{userName}' does not exist");
 		if (user.PassHash != null)
 		{
-			byte[] inhash = HP(password ?? "", user.Uid)!;
+			byte[] inhash = DeepHash(password ?? "", user.Uid)!;
 			if (!inhash.SequenceEqual(user.PassHash)) throw new ExampleLicensingException(LicensingErrorType.PasswordIncorrect, $"User Name '{userName}' incorrect password");
 		}
 		user.LoginCount ??= 1;
@@ -79,10 +79,10 @@ partial class ExampleLicensingProvider
 			// If an old password is specified then its hash must match the user's record hash.
 			// Not specifying and old password causes the password to be replaced without verification.
 			// The plaintext password is no longer persisted anywhere for modern safety reasons.
-			byte[] inhash = HP(oldPassword, user.Uid)!;
+			byte[] inhash = DeepHash(oldPassword, user.Uid)!;
 			if (!inhash.SequenceEqual(user.PassHash ?? [])) throw new ExampleLicensingException(LicensingErrorType.PasswordIncorrect, $"User Id '{userId}' incorrect old password");
 		}
-		user.PassHash = HP(newPassword, user.Uid);
+		user.PassHash = DeepHash(newPassword, user.Uid);
 		user.Psw = null;
 		return await context.SaveChangesAsync().ConfigureAwait(false);
 	}

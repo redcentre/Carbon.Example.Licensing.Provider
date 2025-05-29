@@ -1,5 +1,4 @@
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RCS.Licensing.Provider.Shared;
@@ -10,19 +9,11 @@ namespace RCS.Licensing.Example.Provider.MSTests;
 [TestClass]
 public class ExampleProviderTests : TestBase
 {
-	const string GuestId = "10000335";
-	const string TestUserName = "gfkeogh@gmail.com";
-	const string TestUserPass = "qwe_123";
-	const string GuestPass = "guest";
-	const string Client1CustName = "client1rcs";
-	const string Client1DemoName = "demo";
-	readonly static JsonSerializerOptions JOpts = new() { WriteIndented = true };
-
 	[TestMethod]
 	public async Task T100_Authenticate()
 	{
 		var prov = MakeProvider();
-		LicenceFull? licfull = await prov.AuthenticateName(TestUserName, TestUserPass);
+		LicenceFull? licfull = await prov.AuthenticateName(GetConfig("UserName"), GetConfig("UserPass"));
 		Info($"LoginName -> {licfull.Id} | {licfull.Name}");
 		foreach (var cust in licfull.Customers)
 		{
@@ -40,16 +31,16 @@ public class ExampleProviderTests : TestBase
 	public async Task T120_UpdateAccount()
 	{
 		var prov = MakeProvider();
-		LicenceFull? licfull = await prov.AuthenticateName(TestUserName, TestUserPass);
+		LicenceFull? licfull = await prov.AuthenticateName(GetConfig("UserName"), GetConfig("UserPass"));
 		Info($"LoginName -> {licfull.Id} | {licfull.Name}");
 		string comment = $"Updated on {DateTime.Now}";
-		int ucount = await prov.UpdateAccount(licfull.Id, "GregKeogh", comment, "greg@orthogonal.com.au");
+		int ucount = await prov.UpdateAccount(licfull.Id, "JohnDoe", comment, "john.doe@somewhere.com.au");
 		Info($"Update count -> {ucount}");
 		var user = await prov.ReadUser(licfull.Id);
 		Assert.IsNotNull(user);
-		Assert.AreEqual("GregKeogh", user.Name);
+		Assert.AreEqual("JohnDoe", user.Name);
 		Assert.AreEqual(comment, user.Comment);
-		Assert.AreEqual("greg@orthogonal.com.au", user.Email);
+		Assert.AreEqual("john.doe@somewhere.com.au", user.Email);
 	}
 
 	[TestMethod]

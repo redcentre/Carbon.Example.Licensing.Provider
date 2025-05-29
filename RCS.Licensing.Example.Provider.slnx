@@ -6,6 +6,6 @@
     <File Path="RCS.Licensing.Example.Provider.snk" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="RCS.Licensing.Example.Provider.MSTests/RCS.Licensing.Example.Provider.MSTests.csproj" />
+  <Project Path="RCS.Licensing.Example.Provider.MSTests/RCS.Licensing.Example.Provider.MSTests.csproj" Id="32de331a-4d36-450c-89ca-da55d8b63723" />
   <Project Path="RCS.Licensing.Example.Provider/RCS.Licensing.Example.Provider.csproj" />
 </Solution>

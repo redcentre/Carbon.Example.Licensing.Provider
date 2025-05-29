@@ -127,11 +127,10 @@ partial class ExampleLicensingProvider
 			// │  be a request to change the password. In this case a fresh    │
 			// │  hash is calculated. Note that the plaintext password is no   │
 			// │  longer saved in the User record, only the hash, to conform   │
-			// │  to modern safety conventions. At some point, all the plain   │
-			// │  passwords in all User records will be erased.                │
+			// │  to modern safety conventions.                                │
 			// └───────────────────────────────────────────────────────────────┘
 			//row.Psw = user.Psw;
-			row.PassHash = HP(user.Psw, row.Uid);
+			row.PassHash = DeepHash(user.Psw, row.Uid);
 		}
 		row.Email = user.Email;
 		row.EntityId = user.EntityId;
@@ -363,8 +362,14 @@ partial class ExampleLicensingProvider
 		return ToUser(cust, true);
 	}
 
+	/// <summary>
+	/// Timing test on a typical PC found that around 15000 iterations produced a small but
+	/// acceptable delay, and it's a number high enough to meet most recommendations for
+	/// good protection against brute force attacks. The 16 bytes of a Guid provide an extra
+	/// strength salt value.
+	/// </summary>
 	[return: NotNullIfNotNull(nameof(p))]
-	static byte[]? HP(string? p, Guid u)
+	static byte[]? DeepHash(string? p, Guid u)
 	{
 		if (p == null) return null;
 		using var deriver = new Rfc2898DeriveBytes(p, u.ToByteArray(), 15000, HashAlgorithmName.SHA1);

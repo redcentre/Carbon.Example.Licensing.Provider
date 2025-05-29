@@ -16,16 +16,20 @@ using EF = RCS.Licensing.Example.Provider.EFCore;
 namespace RCS.Licensing.Example.Provider;
 
 /// <summary>
-/// An example of a simple Carbon licensing provider. This provider uses a SQL Server database as the backing
-/// storage for licensing information about Users, Jobs and Customers.
+/// <para>
+/// An example of a licensing provider that implements the full <see cref="ILicensingProvider"/> interface defined
+/// by the Carbon cross-tabulation product suite. This provider uses a SQL Server datbase as the backing storage
+/// for licensing records of user accounts, customers, and jobs.
+/// </para>
+/// <para>
+/// This object is free for developers to use or modify to suit their company requiements. The code is designed
+/// to be general-purpose so it can hopefully be used in different hosting environments by only changing the
+/// database connection string passed into the provider's constructor.
+/// </para>
 /// </summary>
 public partial class ExampleLicensingProvider : ILicensingProvider
 {
 	readonly string _connect;
-	readonly string? _subscriptionId;
-	readonly string? _tenantId;
-	readonly string? _applicationId;
-	readonly string? _applicationSecret;
 
 	/// <summary>
 	/// Constructs an example licensing service provider. Note that the four parameters <paramref name="subscriptionId"/>, <paramref name="tenantId"/>,
@@ -34,19 +38,10 @@ public partial class ExampleLicensingProvider : ILicensingProvider
 	/// See the notes on <see cref="UpdateCustomer(Shared.Entities.Customer)"/> for more information.
 	/// </summary>
 	/// <param name="adoConnectionString">ADO.NET connections string to the SQL server database containing the licensing information.</param>
-	/// <param name="subscriptionId">Optional Azure Subscription Id displayed in the Azure portal.</param>
-	/// <param name="tenantId">Optional Azure Tenant Id displayed in the Azure portal.</param>
-	/// <param name="applicationId">Optional Application Id that must be created in the Azure portal and assigned a role with sufficient
-	/// privileges to create, modify and delete Storage accounts (which correspond to licnsing cusgomers).</param>
-	/// <param name="applicationSecret">Optional Application Secret (aka 'password') created in the Azure portal and associated with the <paramref name="applicationId"/></param>
-	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="productKey"/> or <paramref name="adoConnectionString"/> are null.</exception>
-	public ExampleLicensingProvider(string adoConnectionString, string? subscriptionId = null, string? tenantId = null, string? applicationId = null, string? applicationSecret = null)
+	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="adoConnectionString"/> is null.</exception>
+	public ExampleLicensingProvider(string adoConnectionString)
 	{
 		_connect = adoConnectionString ?? throw new ArgumentNullException(nameof(adoConnectionString));
-		_subscriptionId = subscriptionId;
-		_tenantId = tenantId;
-		_applicationId = applicationId;
-		_applicationSecret = applicationSecret;
 	}
 
 	public event EventHandler<string>? ProviderLog;
@@ -95,7 +90,6 @@ public partial class ExampleLicensingProvider : ILicensingProvider
 
 	/// <summary>
 	/// A deep loaded User from the example database is converted into a Carbon full licence.
-	/// The example rows only contain mimimal data, so a lot of the return properties are null and unused.
 	/// </summary>
 	static async Task<LicenceFull> UserToFull(EF.User user)
 	{
@@ -280,7 +274,16 @@ public partial class ExampleLicensingProvider : ILicensingProvider
 			Id = user.Id.ToString(),
 			Name = user.Name,
 			ProviderId = user.ProviderId,
-			//Psw = user.Psw,		// This value is no longer round-tripped
+
+			// ┌──────────────────────────────────────────────────────────────────────────┐
+			// │  This example provider does not roundtrip the plaintext password for     │
+			// │  obvious security reasons. It does even store the plaintext password     │
+			// │  in the database. This property only exists for backwards compatibility  │
+			// │  with a legacy licensing system. The Psw value is used when upserting a  │
+			// │  User to indicate a new password is being requested, but that's its      │
+			// │  only use.                                                               │
+			// └──────────────────────────────────────────────────────────────────────────┘
+			//Psw = user.Psw,
 			PassHash = user.PassHash,
 			Email = user.Email,
 			EntityId = user.EntityId,

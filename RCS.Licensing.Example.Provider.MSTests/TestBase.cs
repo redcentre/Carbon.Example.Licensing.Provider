@@ -6,7 +6,9 @@ namespace RCS.Licensing.Example.Provider.MSTests;
 
 public class TestBase
 {
+	readonly static JsonSerializerOptions JOpts = new() { WriteIndented = true };
 	protected readonly IConfiguration Config;
+	public TestContext TestContext { get; set; }
 
 	protected TestBase()
 	{
@@ -16,9 +18,11 @@ public class TestBase
 			.Build();
 	}
 
+	protected string GetConfig(string name) => Config[$"UnitTests:{name}"]!;
+
 	protected ExampleLicensingProvider MakeProvider()
 	{
-		string? connect = Config["CarbonApi:AdoConnect"];   // Not used at the moment
+		string? connect = GetConfig("AdoConnect");
 		Assert.IsNotNull(connect, "An ADO connection string to the SQL Server database must be defined in configuration. Use the settings file, user secrets (in development) or another configuration source to provide the value.");
 		Info(connect);
 		var prov = new ExampleLicensingProvider(connect);
@@ -34,11 +38,11 @@ public class TestBase
 		Info("└" + new string('─', len) + "┘");
 	}
 
-	protected void Info(string message) => System.Diagnostics.Trace.WriteLine(message);
+	protected void Info(string message) => TestContext.WriteLine(message);
 
 	protected void PrintJson(object value)
 	{
-		string json = JsonSerializer.Serialize(value, new JsonSerializerOptions() { WriteIndented = true });
+		string json = JsonSerializer.Serialize(value, JOpts);
 		Info(json);
 	}
 }
