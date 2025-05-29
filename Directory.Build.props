@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <Version>9.2.0</Version>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Nullable>enable</Nullable>
+    <NoWarn>CS8618</NoWarn>
+    <Product>Carbon</Product>
+    <Authors>Red Centre Software</Authors>
+    <Company>Red Centre Software</Company>
+    <Copyright>Copyright © 2020-2025 Red Centre Software</Copyright>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <PackageTags>redcentre;Red Centre Software;cross tabulation;crosstab</PackageTags>
+    <IsPublishable>false</IsPublishable>
+  </PropertyGroup>
+</Project>

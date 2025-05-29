@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyTitle>Example Licensing Provider</AssemblyTitle>
+    <Description>Example ILicensingProvider implementing provider that uses a SQL Server database as backing storage.</Description>
+    <Copyright>Copyright © 2020-2025 Red Centre Software</Copyright>
+    <IsPackable>true</IsPackable>
+    <PackageReleaseNotes>Example code by Red Centre Software https://github.com/redcentre/Carbon.Examples.Licensing.Provider/</PackageReleaseNotes>
+    <PackageOutputPath>S:\Nuget\redcentre</PackageOutputPath>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\RCS.Licensing.Example.Provider.snk</AssemblyOriginatorKeyFile>
+    <PackageIcon>RCS.Licensing.Example.Provider.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="RCS.Azure.StorageAccount" Version="2.0.4" />
+    <PackageReference Include="RCS.Licensing.Provider.Shared" Version="8.1.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="RCS.Licensing.Example.Provider.png" Pack="True" PackagePath="\" />
+    <None Include="README.md" Pack="True" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

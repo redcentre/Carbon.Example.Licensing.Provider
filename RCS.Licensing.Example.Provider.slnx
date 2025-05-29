@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="RCS.Licensing.Example.Provider.snk" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="RCS.Licensing.Example.Provider.MSTests/RCS.Licensing.Example.Provider.MSTests.csproj" />
+  <Project Path="RCS.Licensing.Example.Provider/RCS.Licensing.Example.Provider.csproj" />
+</Solution>
