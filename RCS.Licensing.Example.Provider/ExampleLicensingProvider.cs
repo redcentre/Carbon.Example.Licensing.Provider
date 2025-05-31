@@ -30,6 +30,7 @@ namespace RCS.Licensing.Example.Provider;
 public partial class ExampleLicensingProvider : ILicensingProvider
 {
 	readonly string _connect;
+	readonly string? _productKey;
 
 	/// <summary>
 	/// Constructs an example licensing service provider. Note that the four parameters <paramref name="subscriptionId"/>, <paramref name="tenantId"/>,
@@ -38,10 +39,17 @@ public partial class ExampleLicensingProvider : ILicensingProvider
 	/// See the notes on <see cref="UpdateCustomer(Shared.Entities.Customer)"/> for more information.
 	/// </summary>
 	/// <param name="adoConnectionString">ADO.NET connections string to the SQL server database containing the licensing information.</param>
+	/// <param name="productKey">
+	/// If this licensing provider is going to be used anywhere in a stack of applications that use the Carbon cross-tabulation engine,
+	/// then a product key supplied by <a href="https://www.redcentresoftware.com/" target="_blank">Red Centre Software</a> must be passed
+	/// into the provider so that it can be passed back in authentication responses. The Carbon engine calls licensing providers (including
+	/// this one), and it expects the provider to return a valid product key.
+	/// </param>
 	/// <exception cref="ArgumentNullException">Thrown if the <paramref name="adoConnectionString"/> is null.</exception>
-	public ExampleLicensingProvider(string adoConnectionString)
+	public ExampleLicensingProvider(string adoConnectionString, string? productKey = null)
 	{
 		_connect = adoConnectionString ?? throw new ArgumentNullException(nameof(adoConnectionString));
+		_productKey = productKey;
 	}
 
 	public event EventHandler<string>? ProviderLog;
