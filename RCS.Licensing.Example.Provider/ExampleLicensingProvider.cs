@@ -99,7 +99,7 @@ public partial class ExampleLicensingProvider : ILicensingProvider
 	/// <summary>
 	/// A deep loaded User from the example database is converted into a Carbon full licence.
 	/// </summary>
-	static async Task<LicenceFull> UserToFull(EF.User user)
+	async Task<LicenceFull> UserToFull(EF.User user)
 	{
 		var custcomp = new CustomerComparer();
 		EF.Customer[] jobcusts = [.. user.Jobs.Where(j => j.Customer != null).Select(j => j.Customer!)];
@@ -136,7 +136,7 @@ public partial class ExampleLicensingProvider : ILicensingProvider
 			EntityType = null,
 			Recovered = null,
 			GuestJobs = null,
-			ProductKey = null,
+			ProductKey = _productKey,
 			LicenceSignature = null,
 			Roles = user.Roles?.Split([.. ",; "]),
 			Realms = [.. user.Realms.Select(r => new LicenceRealm() { Id = r.Id.ToString(), Name = r.Name, Inactive = r.Inactive, Policy = r.Policy })],
