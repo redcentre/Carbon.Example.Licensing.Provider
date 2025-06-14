@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
-    <PackageReference Include="RCS.Azure.StorageAccount" Version="2.0.4" />
+    <PackageReference Include="RCS.Azure.StorageAccount" Version="2.0.5" />
     <PackageReference Include="RCS.Licensing.Provider.Shared" Version="8.1.16" />
   </ItemGroup>
 
