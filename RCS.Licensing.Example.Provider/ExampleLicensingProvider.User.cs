@@ -26,6 +26,17 @@ partial class ExampleLicensingProvider
 		return ToUser(user, true);
 	}
 
+	/// <summary>
+	/// Retrieves an array of users whose names match the specified value. The user records are 'deep loaded'
+	/// with related Realm, Custom and Job data.
+	/// </summary>
+	/// <remarks>
+	/// In the default distribution, the Name field is covered by a unique index, so only zero or one row can
+	/// be returned. However, this index may be removed or relaxed, so this method assumes the worst case and
+	/// allows an array of matching User rows to be returned.
+	/// </remarks>
+	/// <param name="userName">The name of the users to search for. This parameter is case-sensitive and cannot be null or empty.</param>
+	/// <returns>An array of <see cref="User"/> objects that match the specified name. If no users are found, the array will be empty.</returns>
 	public async Task<User[]> ReadUsersByName(string userName)
 	{
 		using var context = MakeContext();
@@ -34,6 +45,31 @@ partial class ExampleLicensingProvider
 			.Include(u => u.Customers)
 			.Include(u => u.Jobs)
 			.Where(u => u.Name == userName)
+			.AsAsyncEnumerable()
+			.Select(u => ToUser(u, true)!)
+			.ToArrayAsync()
+			.ConfigureAwait(false);
+	}
+
+
+	/// <summary>
+	/// Retrieves an array of users whose email addresses match the specified value. The user records are 'deep loaded'
+	/// with related Realm, Custom and Job data.
+	/// </summary>
+	/// <remarks>
+	/// In the default distribution, the Name field is not covered by a unique index, but one could be added if that policy
+	/// is suitable for an installation. So this method assumes the worst case and allows an array of matching User rows to be returned.
+	/// </remarks>
+	/// <param name="email">The email address of of the users to search for. This parameter is case-sensitive and cannot be null or empty.</param>
+	/// <returns>An array of <see cref="User"/> objects that match the specified email. If no users are found, the array will be empty.</returns>
+	public async Task<User[]> ReadUsersByEmail(string email)
+	{
+		using var context = MakeContext();
+		return await context.Users.AsNoTracking()
+			.Include(u => u.Realms)
+			.Include(u => u.Customers)
+			.Include(u => u.Jobs)
+			.Where(u => u.Email == email)
 			.AsAsyncEnumerable()
 			.Select(u => ToUser(u, true)!)
 			.ToArrayAsync()
